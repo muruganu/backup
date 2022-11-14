@@ -10,3 +10,13 @@
 module "vault-install" {
   source = "./module/install"
 }
+
+module "vault-restore-lambda" {
+  source = "./module/lambda"
+}
+
+module "eventbridge" {
+  source = "./module/eventbridge"
+  lambda-arn = module.vault-restore-lambda.lambda-arn
+  lambda-name = module.vault-restore-lambda.lambda-name
+}

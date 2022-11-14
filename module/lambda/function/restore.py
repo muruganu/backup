@@ -2,6 +2,7 @@ import datetime
 import json
 import boto3
 import urllib3
+import time
 
 #Initialize boto client for AWS Backup
 backup = boto3.client('backup')
@@ -54,7 +55,7 @@ def handleBackup(input_event):
 
     #Set values for restore metadata
     print('Setting restore metadata values')
-    metadata['RestoreMetadata']['targetTableName'] = 'vault-lambda-restore'
+    metadata['RestoreMetadata']['targetTableName'] = 'vault-lambda-restore-test'
     print(metadata)
 
     #API call to start the restore job
@@ -66,14 +67,14 @@ def handleBackup(input_event):
     )
 
     print(json.dumps(restore_request))
-    print("completed restore------------------")
+    print("----------------DDB Table Restore Started------------------")
 
     return
 
 
-# Retore tasks
-def handleRestore():
+#updating recovery changes
 
+def handleRestore(input_event):
     ec2 = boto3.client('ec2', region_name='us-west-2')
 
     response_ec2=ec2.run_instances(ImageId='ami-0512e1935d0e9774d',
@@ -97,7 +98,7 @@ def handleRestore():
 
     print("----EC2 instance is up and running------")
 
-    time.sleep(160)
+    time.sleep(120)
 
     ssm = boto3.client('ssm',region_name="us-west-2")
 
